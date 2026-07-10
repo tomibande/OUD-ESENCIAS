@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear cuenta — Oud & Esencias</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+
+  <div class="auth-layout">
+    <section class="auth-layout__panel-marca">
+      <p class="auth-layout__marca">Oud <span>&amp; Esencias</span></p>
+
+      <blockquote class="auth-layout__cita">
+        <p>“El oud tarda años en formarse. Tu firma olfativa, también.”</p>
+        <small>Nota de casa</small>
+      </blockquote>
+
+      <a href="index.html" class="auth-layout__volver">← Volver al catálogo</a>
+    </section>
+
+    <section class="auth-layout__panel-formulario">
+      <div class="auth-caja">
+        <h1 class="auth-caja__titulo">Creá tu cuenta</h1>
+        <p class="auth-caja__subtitulo">Registrate para comprar, aplicar cupones y ver tu historial de pedidos.</p>
+
+        <p class="mensaje-alerta" data-error hidden></p>
+        <p class="mensaje-alerta" data-exito hidden></p>
+
+        <form data-form-registro novalidate>
+          <div class="campo">
+            <label for="nombreCompleto">Nombre completo</label>
+            <input type="text" id="nombreCompleto" name="nombreCompleto" required autocomplete="name" placeholder="Nombre y apellido">
+          </div>
+
+          <div class="campo">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" name="email" required autocomplete="email" placeholder="tu@correo.com">
+          </div>
+
+          <div class="campo">
+            <label for="telefono">Teléfono</label>
+            <input type="tel" id="telefono" name="telefono" required autocomplete="tel" placeholder="+54 9 11 0000-0000">
+          </div>
+
+          <div class="campo-fila">
+            <div class="campo">
+              <label for="password">Contraseña</label>
+              <input type="password" id="password" name="password" required autocomplete="new-password" placeholder="••••••••">
+            </div>
+            <div class="campo">
+              <label for="confirmarPassword">Confirmar contraseña</label>
+              <input type="password" id="confirmarPassword" name="confirmarPassword" required autocomplete="new-password" placeholder="••••••••">
+            </div>
+          </div>
+          <small style="display:block; margin-top:-10px; margin-bottom:18px; color: var(--color-texto-tenue); font-size:0.72rem;">
+            Mínimo 8 caracteres, con al menos una mayúscula y un número.
+          </small>
+
+          <button type="submit" class="btn btn--dorado btn--ancho">Crear cuenta</button>
+        </form>
+
+        <p class="auth-caja__pie">¿Ya tenés cuenta? <a href="login.html">Ingresá acá</a></p>
+      </div>
+    </section>
+  </div>
+
+  <div class="toasts" data-toasts></div>
+
+  <script type="module" src="dist/app.js"></script>
+  <script type="module" src="dist/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+/* =========================================================================
+   OUD & ESENCIAS — auth.css
+   Login y registro: composición en dos paneles, uno editorial (marca) y
+   uno funcional (formulario), típica de e-commerce de perfumería premium.
+   ========================================================================= */
+
+.auth-layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.auth-layout__panel-marca {
+  position: relative;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background:
+    radial-gradient(circle at 25% 15%, rgba(200, 162, 92, 0.16), transparent 45%),
+    radial-gradient(circle at 80% 85%, rgba(122, 46, 46, 0.22), transparent 50%),
+    var(--color-bg-elevado);
+  border-right: 1px solid var(--color-borde-suave);
+}
+
+.auth-layout__marca {
+  font-family: var(--fuente-display);
+  font-size: 1.6rem;
+}
+.auth-layout__marca span { color: var(--color-oro); font-style: italic; }
+
+.auth-layout__cita {
+  max-width: 34ch;
+}
+.auth-layout__cita p {
+  font-family: var(--fuente-display);
+  font-style: italic;
+  font-size: 1.6rem;
+  line-height: 1.4;
+  color: var(--color-texto);
+}
+.auth-layout__cita small {
+  display: block;
+  margin-top: 14px;
+  font-family: var(--fuente-cuerpo);
+  font-style: normal;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-oro-opaco);
+}
+
+.auth-layout__volver {
+  font-size: 0.78rem;
+  color: var(--color-texto-muted);
+  letter-spacing: 0.04em;
+}
+.auth-layout__volver:hover { color: var(--color-oro); }
+
+.auth-layout__panel-formulario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+.auth-caja {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-caja__titulo { font-size: 2rem; margin-bottom: 8px; }
+.auth-caja__subtitulo { color: var(--color-texto-muted); font-size: 0.92rem; margin-bottom: 32px; }
+
+.auth-caja__pie {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-texto-muted);
+}
+.auth-caja__pie a { color: var(--color-oro); text-decoration: underline; text-underline-offset: 3px; }
+
+.auth-caja__demo {
+  margin-top: 26px;
+  padding: 14px 16px;
+  border: 1px dashed var(--color-borde);
+  border-radius: var(--radio-sm);
+  font-size: 0.76rem;
+  color: var(--color-texto-tenue);
+  line-height: 1.6;
+}
+.auth-caja__demo strong { color: var(--color-texto-muted); }
+
+@media (max-width: 900px) {
+  .auth-layout { grid-template-columns: 1fr; }
+  .auth-layout__panel-marca { display: none; }
+  .auth-layout__panel-formulario { padding-block: 60px; }
+}

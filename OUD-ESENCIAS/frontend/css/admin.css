@@ -1,0 +1,120 @@
+/* =========================================================================
+   OUD & ESENCIAS — admin.css
+   Backoffice: acotado exclusivamente a alta y baja de perfumes
+   (RF-14, RF-15, RF-16). Estética más sobria y "operativa" que la tienda.
+   ========================================================================= */
+
+.admin-layout {
+  padding-block: 44px 100px;
+}
+
+.admin-cabecera { margin-bottom: 36px; }
+.admin-cabecera__eyebrow {
+  font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-oro);
+}
+.admin-cabecera h1 { font-size: 2.1rem; margin-top: 10px; }
+.admin-cabecera p { color: var(--color-texto-muted); margin-top: 8px; max-width: 60ch; }
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.admin-panel {
+  background: var(--color-bg-elevado);
+  border: 1px solid var(--color-borde-suave);
+  border-radius: var(--radio-md);
+  padding: 26px;
+}
+.admin-panel h2 { font-size: 1.3rem; margin-bottom: 22px; }
+
+.admin-panel__imagen-carga {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 4px;
+}
+.admin-panel__imagen-carga img {
+  width: 56px; height: 56px; object-fit: cover; border-radius: var(--radio-sm);
+  border: 1px solid var(--color-borde);
+}
+.input-archivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px dashed var(--color-borde);
+  border-radius: var(--radio-sm);
+  padding: 10px 14px;
+  font-size: 0.78rem;
+  color: var(--color-texto-muted);
+  cursor: pointer;
+}
+.input-archivo:hover { border-color: var(--color-oro); color: var(--color-oro); }
+.input-archivo input[type="file"] { display: none; }
+
+/* Tabla de productos */
+.admin-tabla-wrap {
+  background: var(--color-bg-elevado);
+  border: 1px solid var(--color-borde-suave);
+  border-radius: var(--radio-md);
+  overflow: hidden;
+}
+.admin-tabla-wrap__header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px; border-bottom: 1px solid var(--color-borde-suave);
+}
+.admin-tabla-wrap__header h2 { font-size: 1.3rem; }
+
+.tabla-admin { width: 100%; border-collapse: collapse; }
+.tabla-admin th {
+  text-align: left;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-borde-suave);
+}
+.tabla-admin td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-borde-suave);
+  vertical-align: middle;
+}
+.tabla-admin tr:last-child td { border-bottom: none; }
+
+.tabla-admin__imagen img { width: 46px; height: 46px; object-fit: cover; border-radius: var(--radio-sm); }
+.tabla-admin__nombre { font-family: var(--fuente-display); font-size: 1.05rem; }
+.tabla-admin__marca { font-size: 0.76rem; color: var(--color-texto-muted); margin-top: 2px; }
+
+.etiqueta-stock {
+  display: inline-block;
+  font-size: 0.76rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-borde);
+  color: var(--color-texto-muted);
+}
+.etiqueta-stock--agotado { color: var(--color-error); border-color: var(--color-error); }
+
+.productos-vacio { padding: 40px 24px; text-align: center; color: var(--color-texto-muted); }
+
+.acceso-restringido {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  gap: 16px;
+  padding: 40px 24px;
+}
+.acceso-restringido h1 { font-size: 1.8rem; }
+.acceso-restringido p { color: var(--color-texto-muted); max-width: 46ch; }
+
+@media (max-width: 980px) {
+  .admin-grid { grid-template-columns: 1fr; }
+  .admin-tabla-wrap { overflow-x: auto; }
+  .tabla-admin { min-width: 640px; }
+}

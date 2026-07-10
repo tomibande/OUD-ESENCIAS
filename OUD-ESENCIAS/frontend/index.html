@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oud & Esencias — Perfumería Árabe Exclusiva</title>
+  <meta name="description" content="Fragancias árabes originales: Lattafa, Afnan, Al Haramain, Rasasi y más. Envíos a todo el país.">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/tienda.css">
+</head>
+<body>
+
+  <header class="encabezado">
+    <div class="contenedor navbar">
+      <a href="index.html" class="navbar__marca">Oud <span>&amp; Esencias</span></a>
+
+      <nav class="nav-principal" data-nav-principal>
+        <a href="index.html">Catálogo</a>
+        <a href="#nosotros">Nuestra casa</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+
+      <div class="navbar__acciones">
+        <div class="navbar__zona-auth" data-zona-auth></div>
+        <button type="button" class="navbar__boton-carrito" data-abrir-carrito aria-label="Abrir carrito de compras">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span class="navbar__badge" data-badge-carrito hidden>0</span>
+        </button>
+        <button type="button" class="navbar__toggle-menu" data-toggle-menu aria-expanded="false" aria-label="Abrir menú">
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero contenedor">
+      <div class="hero__contenido">
+        <span class="hero__eyebrow">Perfumería árabe exclusiva</span>
+        <h1 class="hero__titulo">El oud auténtico, <em>directo del Golfo</em> a tu piel.</h1>
+        <p class="hero__descripcion">
+          Fragancias originales de las casas árabes más reconocidas —
+          Lattafa, Afnan, Al Haramain, Rasasi— con stock en tiempo real
+          y pirámide olfativa detallada en cada perfume.
+        </p>
+        <div class="hero__acciones">
+          <a href="#catalogo" class="btn btn--dorado">Explorar catálogo</a>
+          <a href="#nosotros" class="btn btn--fantasma">Nuestra historia</a>
+        </div>
+
+        <dl class="hero__estadisticas">
+          <div class="hero__estadistica"><dt>100%</dt><dd>Originales</dd></div>
+          <div class="hero__estadistica"><dt>+10</dt><dd>Casas de perfumería</dd></div>
+          <div class="hero__estadistica"><dt>24/48h</dt><dd>Despacho</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <div class="divisor-arabesco" role="presentation"></div>
+
+    <section class="seccion-catalogo contenedor" id="catalogo">
+      <div class="catalogo__cabecera">
+        <h2 class="catalogo__titulo">Catálogo</h2>
+
+        <div class="catalogo__buscador">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <input type="search" placeholder="Buscar por nombre, marca o nota…" data-filtro-busqueda aria-label="Buscar perfumes">
+        </div>
+
+        <button type="button" class="btn btn--fantasma toggle-filtros" data-toggle-filtros aria-expanded="false">
+          Filtros
+        </button>
+
+        <p class="catalogo__contador" data-contador-resultados></p>
+      </div>
+
+      <form class="panel-filtros" data-form-filtros data-panel-filtros>
+        <div class="panel-filtros__campo">
+          <label for="filtro-marca">Marca</label>
+          <select id="filtro-marca" data-filtro-marca>
+            <option value="">Todas las marcas</option>
+          </select>
+        </div>
+        <div class="panel-filtros__campo">
+          <label for="filtro-nota">Familia olfativa</label>
+          <select id="filtro-nota" data-filtro-nota>
+            <option value="">Todas las notas</option>
+          </select>
+        </div>
+        <div class="panel-filtros__campo">
+          <label for="filtro-precio-min">Rango de precio</label>
+          <div class="panel-filtros__rango">
+            <input type="number" id="filtro-precio-min" placeholder="Mín" min="0" data-filtro-precio-min>
+            <span>—</span>
+            <input type="number" placeholder="Máx" min="0" data-filtro-precio-max>
+          </div>
+        </div>
+        <div class="panel-filtros__acciones">
+          <button type="button" class="btn btn--linea btn--sm" data-limpiar-filtros>Limpiar filtros</button>
+        </div>
+      </form>
+
+      <div class="grilla-catalogo" data-grilla-catalogo></div>
+
+      <div class="catalogo-vacio" data-catalogo-vacio hidden>
+        <h3>No encontramos fragancias con esos filtros</h3>
+        <p class="texto-muted">Probá ampliar el rango de precio o quitar alguna nota olfativa.</p>
+      </div>
+    </section>
+
+    <div class="divisor-arabesco" role="presentation"></div>
+
+    <section class="contenedor" id="nosotros" style="padding-block: 60px 100px; max-width: 780px;">
+      <h2 style="font-size: 1.8rem; margin-bottom: 16px;">Nuestra casa</h2>
+      <p class="texto-muted">
+        Oud &amp; Esencias nace para ordenar un mercado invadido por réplicas
+        informales, centralizando la venta de fragancias árabes 100% originales
+        en un canal digital seguro, con stock verificado y pasarela de pago
+        protegida.
+      </p>
+    </section>
+  </main>
+
+  <footer class="pie-pagina" id="contacto">
+    <div class="contenedor">
+      <div class="pie-pagina__grid">
+        <div>
+          <p class="pie-pagina__marca">Oud <span>&amp; Esencias</span></p>
+          <p class="pie-pagina__descripcion">
+            Perfumería árabe exclusiva. Fragancias originales, stock real
+            y una experiencia de compra pensada para quien conoce el oud.
+          </p>
+        </div>
+        <div>
+          <p class="pie-pagina__titulo-columna">Tienda</p>
+          <div class="pie-pagina__links">
+            <a href="index.html#catalogo">Catálogo completo</a>
+            <a href="registro.html">Crear cuenta</a>
+            <a href="login.html">Ingresar</a>
+          </div>
+        </div>
+        <div>
+          <p class="pie-pagina__titulo-columna">Contacto</p>
+          <div class="pie-pagina__links">
+            <a href="mailto:hola@oudesencias.com">hola@oudesencias.com</a>
+            <a href="#">Preguntas frecuentes</a>
+          </div>
+        </div>
+      </div>
+      <p class="pie-pagina__copy">© 2026 Oud &amp; Esencias — Proyecto académico 6to año, Modalidad Técnica / Informática.</p>
+    </div>
+  </footer>
+
+  <!-- Panel lateral del carrito -->
+  <div class="overlay" data-overlay></div>
+  <aside class="panel-lateral" data-panel-carrito aria-label="Carrito de compras">
+    <div class="panel-lateral__header">
+      <h2>Tu carrito</h2>
+      <button type="button" class="panel-lateral__cerrar" data-cerrar-carrito aria-label="Cerrar carrito">✕</button>
+    </div>
+    <div class="panel-lateral__cuerpo">
+      <div class="carrito-vacio" data-carrito-vacio>
+        <p>Tu carrito está vacío.</p>
+        <p class="texto-muted" style="margin-top:6px; font-size: 0.85rem;">Explorá el catálogo y sumá tu próxima fragancia.</p>
+      </div>
+      <ul data-lista-carrito></ul>
+    </div>
+    <div class="panel-lateral__footer">
+      <form class="form-cupon" data-form-cupon>
+        <input type="text" name="codigoCupon" placeholder="Código de cupón" aria-label="Código de cupón">
+        <button type="submit" class="btn btn--linea btn--sm">Aplicar</button>
+      </form>
+      <p class="cupon-mensaje" data-cupon-mensaje></p>
+
+      <div data-carrito-totales hidden></div>
+
+      <button type="button" class="btn btn--dorado btn--ancho" style="margin-top:16px;" data-boton-checkout>
+        Confirmar compra
+      </button>
+    </div>
+  </aside>
+
+  <!-- Modal historial de pedidos -->
+  <div class="modal" data-modal-pedidos>
+    <div class="modal__caja">
+      <div class="modal__header">
+        <h2>Mis pedidos</h2>
+        <button type="button" class="panel-lateral__cerrar" data-cerrar-modal-pedidos aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal__cuerpo" data-lista-pedidos></div>
+    </div>
+  </div>
+
+  <div class="toasts" data-toasts></div>
+
+  <script type="module" src="dist/app.js"></script>
+  <script type="module" src="dist/carrito.js"></script>
+  <script type="module" src="dist/catalogo.js"></script>
+</body>
+</html>

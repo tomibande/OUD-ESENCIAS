@@ -1,0 +1,197 @@
+/**
+ * catalogo.ts
+ * Controla index.html: grilla de productos, buscador y filtros
+ * concurrentes (marca, notas olfativas, rango de precio).
+ * RF-05 a RF-09, HU-03, HU-04, HU-05.
+ */
+import { obtenerCatalogoPublico, obtenerMarcasDisponibles, obtenerNotasDisponibles } from "./api.js";
+import { formatoMoneda, escaparHtml } from "./app.js";
+import { agregarAlCarrito } from "./carrito.js";
+let catalogoCompleto = [];
+const filtrosActuales = {
+    busqueda: "",
+    marca: "",
+    notaOlfativa: "",
+    precioMin: null,
+    precioMax: null,
+};
+function aplicarFiltros() {
+    return catalogoCompleto.filter((p) => {
+        const coincideBusqueda = !filtrosActuales.busqueda ||
+            p.nombre.toLowerCase().includes(filtrosActuales.busqueda) ||
+            p.marca.toLowerCase().includes(filtrosActuales.busqueda) ||
+            p.familiaOlfativa.toLowerCase().includes(filtrosActuales.busqueda);
+        const coincideMarca = !filtrosActuales.marca || p.marca === filtrosActuales.marca;
+        const coincideNota = !filtrosActuales.notaOlfativa || p.familiaOlfativa === filtrosActuales.notaOlfativa;
+        const coincideMin = filtrosActuales.precioMin === null || p.precio >= filtrosActuales.precioMin;
+        const coincideMax = filtrosActuales.precioMax === null || p.precio <= filtrosActuales.precioMax;
+        return coincideBusqueda && coincideMarca && coincideNota && coincideMin && coincideMax;
+    });
+}
+function tarjetaPerfume(perfume) {
+    return `
+    <article class="tarjeta-perfume" data-id="${perfume.id}">
+      <div class="tarjeta-perfume__cara tarjeta-perfume__cara--frente">
+        <div class="tarjeta-perfume__imagen-wrap">
+          <img src="${escaparHtml(perfume.imagen)}" alt="${escaparHtml(perfume.nombre)}" loading="lazy">
+          <span class="tarjeta-perfume__familia">${escaparHtml(perfume.familiaOlfativa)}</span>
+        </div>
+        <div class="tarjeta-perfume__cuerpo">
+          <p class="tarjeta-perfume__marca">${escaparHtml(perfume.marca)}</p>
+          <h3 class="tarjeta-perfume__nombre">${escaparHtml(perfume.nombre)}</h3>
+          <p class="tarjeta-perfume__ml">${perfume.ml} ml</p>
+          <div class="tarjeta-perfume__pie">
+            <span class="tarjeta-perfume__precio">${formatoMoneda(perfume.precio)}</span>
+            <button type="button" class="btn btn--dorado btn--sm" data-agregar-carrito="${perfume.id}">
+              Añadir
+            </button>
+          </div>
+          <button type="button" class="tarjeta-perfume__ver-piramide" data-ver-piramide="${perfume.id}">
+            Ver pirámide olfativa ↴
+          </button>
+        </div>
+      </div>
+      <div class="tarjeta-perfume__piramide" data-piramide="${perfume.id}" hidden>
+        ${piramideHtml(perfume)}
+      </div>
+    </article>
+  `;
+}
+function piramideHtml(perfume) {
+    const nivel = (etiqueta, notas, mod) => `
+    <div class="piramide__nivel piramide__nivel--${mod}">
+      <span class="piramide__etiqueta">${etiqueta}</span>
+      <div class="piramide__barra"><span></span></div>
+      <p class="piramide__notas">${notas.map(escaparHtml).join(" · ")}</p>
+    </div>
+  `;
+    return `
+    <button type="button" class="tarjeta-perfume__cerrar-piramide" data-cerrar-piramide="${perfume.id}" aria-label="Cerrar">✕</button>
+    <h4 class="piramide__titulo">Pirámide Olfativa</h4>
+    <p class="piramide__descripcion">${escaparHtml(perfume.descripcion)}</p>
+    ${nivel("Salida", perfume.piramide.salida, "salida")}
+    ${nivel("Corazón", perfume.piramide.corazon, "corazon")}
+    ${nivel("Fondo", perfume.piramide.fondo, "fondo")}
+  `;
+}
+function renderizarGrilla() {
+    const grilla = document.querySelector("[data-grilla-catalogo]");
+    const vacio = document.querySelector("[data-catalogo-vacio]");
+    const contador = document.querySelector("[data-contador-resultados]");
+    if (!grilla)
+        return;
+    const resultados = aplicarFiltros();
+    if (contador) {
+        contador.textContent = `${resultados.length} ${resultados.length === 1 ? "fragancia" : "fragancias"}`;
+    }
+    if (resultados.length === 0) {
+        grilla.innerHTML = "";
+        if (vacio)
+            vacio.hidden = false;
+        return;
+    }
+    if (vacio)
+        vacio.hidden = true;
+    grilla.innerHTML = resultados.map(tarjetaPerfume).join("");
+}
+function inicializarInteracciones() {
+    const grilla = document.querySelector("[data-grilla-catalogo]");
+    if (!grilla)
+        return;
+    grilla.addEventListener("click", async (evento) => {
+        const objetivo = evento.target;
+        const idAgregar = objetivo.closest("[data-agregar-carrito]")?.dataset.agregarCarrito;
+        if (idAgregar) {
+            const error = await agregarAlCarrito(Number(idAgregar));
+            const toastContenedor = document.querySelector("[data-toasts]");
+            if (toastContenedor) {
+                const toast = document.createElement("div");
+                toast.className = `toast toast--${error ? "error" : "exito"} toast--visible`;
+                toast.textContent = error ?? "Se añadió al carrito.";
+                toastContenedor.appendChild(toast);
+                setTimeout(() => toast.remove(), 2600);
+            }
+            return;
+        }
+        const idPiramide = objetivo.closest("[data-ver-piramide]")?.dataset.verPiramide;
+        if (idPiramide) {
+            document.querySelector(`[data-piramide="${idPiramide}"]`)?.removeAttribute("hidden");
+            return;
+        }
+        const idCerrarPiramide = objetivo.closest("[data-cerrar-piramide]")?.dataset.cerrarPiramide;
+        if (idCerrarPiramide) {
+            document.querySelector(`[data-piramide="${idCerrarPiramide}"]`)?.setAttribute("hidden", "");
+        }
+    });
+}
+async function poblarFiltros() {
+    const selectMarca = document.querySelector("[data-filtro-marca]");
+    const selectNota = document.querySelector("[data-filtro-nota]");
+    const [marcas, notas] = await Promise.all([obtenerMarcasDisponibles(), obtenerNotasDisponibles()]);
+    if (selectMarca) {
+        for (const marca of marcas) {
+            const opcion = document.createElement("option");
+            opcion.value = marca;
+            opcion.textContent = marca;
+            selectMarca.appendChild(opcion);
+        }
+    }
+    if (selectNota) {
+        for (const nota of notas) {
+            const opcion = document.createElement("option");
+            opcion.value = nota;
+            opcion.textContent = nota;
+            selectNota.appendChild(opcion);
+        }
+    }
+}
+function inicializarControlesFiltro() {
+    document.querySelector("[data-filtro-busqueda]")?.addEventListener("input", (e) => {
+        filtrosActuales.busqueda = e.target.value.trim().toLowerCase();
+        renderizarGrilla();
+    });
+    document.querySelector("[data-filtro-marca]")?.addEventListener("change", (e) => {
+        filtrosActuales.marca = e.target.value;
+        renderizarGrilla();
+    });
+    document.querySelector("[data-filtro-nota]")?.addEventListener("change", (e) => {
+        filtrosActuales.notaOlfativa = e.target.value;
+        renderizarGrilla();
+    });
+    document.querySelector("[data-filtro-precio-min]")?.addEventListener("input", (e) => {
+        const valor = e.target.value;
+        filtrosActuales.precioMin = valor ? Number(valor) : null;
+        renderizarGrilla();
+    });
+    document.querySelector("[data-filtro-precio-max]")?.addEventListener("input", (e) => {
+        const valor = e.target.value;
+        filtrosActuales.precioMax = valor ? Number(valor) : null;
+        renderizarGrilla();
+    });
+    document.querySelector("[data-limpiar-filtros]")?.addEventListener("click", () => {
+        filtrosActuales.busqueda = "";
+        filtrosActuales.marca = "";
+        filtrosActuales.notaOlfativa = "";
+        filtrosActuales.precioMin = null;
+        filtrosActuales.precioMax = null;
+        const formulario = document.querySelector("[data-form-filtros]");
+        formulario?.reset();
+        renderizarGrilla();
+    });
+    document.querySelector("[data-toggle-filtros]")?.addEventListener("click", (e) => {
+        const panel = document.querySelector("[data-panel-filtros]");
+        const abierto = panel?.classList.toggle("filtros--abierto");
+        e.currentTarget.setAttribute("aria-expanded", String(Boolean(abierto)));
+    });
+}
+async function inicializarCatalogo() {
+    const grilla = document.querySelector("[data-grilla-catalogo]");
+    if (!grilla)
+        return;
+    catalogoCompleto = await obtenerCatalogoPublico();
+    await poblarFiltros();
+    inicializarControlesFiltro();
+    inicializarInteracciones();
+    renderizarGrilla();
+}
+document.addEventListener("DOMContentLoaded", inicializarCatalogo);

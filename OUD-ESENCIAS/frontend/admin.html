@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel administrativo — Oud & Esencias</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <header class="encabezado">
+    <div class="contenedor navbar">
+      <a href="index.html" class="navbar__marca">Oud <span>&amp; Esencias</span></a>
+      <nav class="nav-principal" data-nav-principal>
+        <a href="index.html">Ver catálogo público</a>
+      </nav>
+      <div class="navbar__acciones">
+        <div class="navbar__zona-auth" data-zona-auth></div>
+        <button type="button" class="navbar__toggle-menu" data-toggle-menu aria-expanded="false" aria-label="Abrir menú">
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenedor admin-layout" data-panel-admin>
+    <div class="admin-cabecera">
+      <span class="admin-cabecera__eyebrow">Backoffice</span>
+      <h1>Panel administrativo</h1>
+      <p>
+        Este panel está limitado exclusivamente al alta y la baja de perfumes
+        del catálogo público. El administrador no tiene acceso a datos de
+        clientes, carritos ni pagos.
+      </p>
+    </div>
+
+    <div class="admin-grid">
+      <section class="admin-panel">
+        <h2>Dar de alta un perfume</h2>
+
+        <p class="mensaje-alerta" data-error hidden></p>
+        <p class="mensaje-alerta" data-exito hidden></p>
+
+        <form data-form-alta novalidate>
+          <div class="campo">
+            <label for="nombre">Nombre del perfume</label>
+            <input type="text" id="nombre" name="nombre" required placeholder="Ej: Khamrah">
+          </div>
+
+          <div class="campo-fila">
+            <div class="campo">
+              <label for="marca">Marca / casa</label>
+              <input type="text" id="marca" name="marca" required placeholder="Ej: Lattafa">
+            </div>
+            <div class="campo">
+              <label for="familiaOlfativa">Familia olfativa</label>
+              <input type="text" id="familiaOlfativa" name="familiaOlfativa" required placeholder="Ej: Ambarado Especiado">
+            </div>
+          </div>
+
+          <div class="campo-fila">
+            <div class="campo">
+              <label for="precio">Precio (ARS)</label>
+              <input type="number" id="precio" name="precio" required min="0" step="100" placeholder="0">
+            </div>
+            <div class="campo">
+              <label for="ml">Contenido (ml)</label>
+              <input type="number" id="ml" name="ml" required min="1" placeholder="100">
+            </div>
+          </div>
+
+          <div class="campo">
+            <label for="stock">Stock inicial</label>
+            <input type="number" id="stock" name="stock" required min="0" placeholder="0">
+          </div>
+
+          <div class="campo">
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" name="descripcion" required placeholder="Breve descripción de la fragancia…"></textarea>
+          </div>
+
+          <div class="campo-fila">
+            <div class="campo">
+              <label for="notasSalida">Notas de salida</label>
+              <input type="text" id="notasSalida" name="notasSalida" placeholder="Separadas por coma">
+            </div>
+            <div class="campo">
+              <label for="notasCorazon">Notas de corazón</label>
+              <input type="text" id="notasCorazon" name="notasCorazon" placeholder="Separadas por coma">
+            </div>
+          </div>
+          <div class="campo">
+            <label for="notasFondo">Notas de fondo</label>
+            <input type="text" id="notasFondo" name="notasFondo" placeholder="Separadas por coma">
+          </div>
+
+          <div class="campo">
+            <label>Imagen del producto <span style="color: var(--color-error);">*obligatoria</span></label>
+            <div class="admin-panel__imagen-carga">
+              <label class="input-archivo">
+                📁 Elegir archivo
+                <input type="file" accept="image/*" data-input-imagen>
+              </label>
+              <img data-previa-imagen alt="Vista previa" hidden>
+            </div>
+            <small>También podés pegar una URL de imagen si no vas a subir un archivo.</small>
+            <input type="text" name="imagen" placeholder="https://…">
+          </div>
+
+          <button type="submit" class="btn btn--dorado btn--ancho">Guardar perfume</button>
+        </form>
+      </section>
+
+      <section class="admin-tabla-wrap">
+        <div class="admin-tabla-wrap__header">
+          <h2>Catálogo activo</h2>
+        </div>
+        <table class="tabla-admin">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Producto</th>
+              <th>Precio</th>
+              <th>Tamaño</th>
+              <th>Stock</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody data-tabla-productos></tbody>
+        </table>
+        <p class="productos-vacio" data-productos-vacio hidden>Todavía no cargaste ningún perfume.</p>
+      </section>
+    </div>
+  </main>
+
+  <div class="toasts" data-toasts></div>
+
+  <script type="module" src="dist/app.js"></script>
+  <script type="module" src="dist/admin.js"></script>
+</body>
+</html>
