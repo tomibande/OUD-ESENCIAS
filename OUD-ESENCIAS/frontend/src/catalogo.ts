@@ -6,9 +6,16 @@
  */
 
 import type { Perfume, FiltrosCatalogo } from "./types.js";
-import { obtenerCatalogoPublico, obtenerMarcasDisponibles, obtenerNotasDisponibles } from "./api.js";
+import { obtenerCatalogoPublico, obtenerMarcasDisponibles, obtenerNotasDisponibles, obtenerSesionActual } from "./api.js";
 import { formatoMoneda, escaparHtml } from "./app.js";
 import { agregarAlCarrito } from "./carrito.js";
+
+/** SVG de respaldo cuando la imagen del perfume no carga (sin conexión, CDN caída, etc.). */
+const IMAGEN_RESPALDO =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><rect width="300" height="300" fill="#1c1712"/><text x="50%" y="50%" fill="#a9895f" font-family="sans-serif" font-size="16" text-anchor="middle" dominant-baseline="middle">Oud Esencias</text></svg>`
+  );
 
 let catalogoCompleto: Perfume[] = [];
 
@@ -38,11 +45,29 @@ function aplicarFiltros(): Perfume[] {
 }
 
 function tarjetaPerfume(perfume: Perfume): string {
+  const sesion = obtenerSesionActual();
+
+  // RF: el botón "Añadir al carrito" sólo se muestra a usuarios con sesión
+  // iniciada. Si no hay sesión, se invita a iniciarla en su lugar.
+  const accionCarrito = sesion
+    ? `<button type="button" class="btn btn--dorado btn--sm" data-agregar-carrito="${perfume.id}">
+        Añadir al carrito
+      </button>`
+    : `<a href="login.html" class="btn btn--linea btn--sm" data-requiere-login>
+        Iniciá sesión para comprar
+      </a>`;
+
   return `
     <article class="tarjeta-perfume" data-id="${perfume.id}">
       <div class="tarjeta-perfume__cara tarjeta-perfume__cara--frente">
         <div class="tarjeta-perfume__imagen-wrap">
-          <img src="${escaparHtml(perfume.imagen)}" alt="${escaparHtml(perfume.nombre)}" loading="lazy">
+          <img
+            src="${escaparHtml(perfume.imagen)}"
+            alt="${escaparHtml(perfume.nombre)}"
+            loading="lazy"
+            referrerpolicy="no-referrer"
+            onerror="this.onerror=null;this.src='${IMAGEN_RESPALDO}';"
+          >
           <span class="tarjeta-perfume__familia">${escaparHtml(perfume.familiaOlfativa)}</span>
         </div>
         <div class="tarjeta-perfume__cuerpo">
@@ -51,9 +76,7 @@ function tarjetaPerfume(perfume: Perfume): string {
           <p class="tarjeta-perfume__ml">${perfume.ml} ml</p>
           <div class="tarjeta-perfume__pie">
             <span class="tarjeta-perfume__precio">${formatoMoneda(perfume.precio)}</span>
-            <button type="button" class="btn btn--dorado btn--sm" data-agregar-carrito="${perfume.id}">
-              Añadir
-            </button>
+            ${accionCarrito}
           </div>
           <button type="button" class="tarjeta-perfume__ver-piramide" data-ver-piramide="${perfume.id}">
             Ver pirámide olfativa ↴
@@ -241,6 +264,12 @@ async function inicializarCatalogo(): Promise<void> {
       vacio.querySelector("h3")!.textContent = "No pudimos cargar el catálogo";
       vacio.querySelector("p")!.textContent =
         "Ocurrió un problema al cargar los perfumes. Recargá la página o probá más tarde.";
+      vacio.hidden = false;
+    }
+  }
+}
+
+document.addEventListener("DOMContentLoaded", inicializarCatalogo);
       vacio.hidden = false;
     }
   }
