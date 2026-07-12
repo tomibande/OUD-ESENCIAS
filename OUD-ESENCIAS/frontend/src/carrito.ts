@@ -3,8 +3,9 @@
  * Gestión del carrito de compras, cupones, checkout e historial de
  * pedidos. RF-08 a RF-13, RF-17, RF-18, HU-05 a HU-08, HU-14.
  *
- * El carrito persiste en localStorage (independiente de la sesión) para
- * que el visitante no pierda su selección al recargar la página.
+ * El carrito persiste en localStorage, PERO vinculado al usuario logueado:
+ * cada usuario tiene su propia clave (oud_carrito_<id>), para que no se
+ * mezclen carritos entre distintas cuentas en el mismo navegador.
  */
 
 import type { ItemCarrito, Perfume } from "./types.js";
@@ -15,10 +16,9 @@ import {
   procesarCheckout,
   obtenerHistorialPedidos,
   obtenerSesionActual,
+  obtenerClaveCarrito,
 } from "./api.js";
 import { formatoMoneda, escaparHtml } from "./app.js";
-
-const CARRITO_KEY = "oud_carrito";
 
 /** Mismo respaldo que catalogo.ts para cuando la imagen externa no carga. */
 const IMAGEN_RESPALDO =
@@ -28,12 +28,12 @@ const IMAGEN_RESPALDO =
   );
 
 function leerCarrito(): ItemCarrito[] {
-  const guardado = localStorage.getItem(CARRITO_KEY);
+  const guardado = localStorage.getItem(obtenerClaveCarrito());
   return guardado ? (JSON.parse(guardado) as ItemCarrito[]) : [];
 }
 
 function guardarCarrito(items: ItemCarrito[]): void {
-  localStorage.setItem(CARRITO_KEY, JSON.stringify(items));
+  localStorage.setItem(obtenerClaveCarrito(), JSON.stringify(items));
   actualizarBadge();
   document.dispatchEvent(new CustomEvent("carrito:actualizado"));
 }
