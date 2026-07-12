@@ -58,14 +58,17 @@ async function renderizarTablaProductos(): Promise<void> {
       </td>
     `;
 
-    fila.querySelector("[data-baja]")?.addEventListener("click", async () => {
-      const confirmado = window.confirm(
-        `¿Confirmás dar de baja "${producto.nombre}"? Podrá desactivarse y dejará de mostrarse a los clientes, pero el registro histórico se conserva.`
-      );
-      if (!confirmado) return;
-      await bajaPerfume(producto.id);
-      renderizarTablaProductos();
-    });
+    const botonBaja = fila.querySelector<HTMLButtonElement>("[data-baja]");
+    if (botonBaja) {
+      botonBaja.addEventListener("click", async () => {
+        const confirmado = window.confirm(
+          `¿Confirmás dar de baja "${producto.nombre}"? Podrá desactivarse y dejará de mostrarse a los clientes, pero el registro histórico se conserva.`
+        );
+        if (!confirmado) return;
+        await bajaPerfume(producto.id);
+        renderizarTablaProductos();
+      });
+    }
 
     cuerpoTabla.appendChild(fila);
   }
@@ -97,19 +100,22 @@ function inicializarFormularioAlta(): void {
   const formulario = document.querySelector<HTMLFormElement>("[data-form-alta]");
   if (!formulario) return;
 
-  const cajaError = formulario.querySelector<HTMLElement>("[data-error]")!;
-  const cajaExito = formulario.querySelector<HTMLElement>("[data-exito]")!;
+  const cajaError = document.querySelector<HTMLElement>("[data-error]")!;
+  const cajaExito = document.querySelector<HTMLElement>("[data-exito]")!;
   const inputImagen = formulario.querySelector<HTMLInputElement>("[data-input-imagen]");
   const previa = formulario.querySelector<HTMLImageElement>("[data-previa-imagen]");
 
   // Vista previa local del archivo cargado (no sustituye la validación de RF-15).
-  inputImagen?.addEventListener("change", () => {
-    const archivo = inputImagen.files?.[0];
-    if (!archivo || !previa) return;
-    previa.src = URL.createObjectURL(archivo);
-    previa.hidden = false;
-    (formulario.elements.namedItem("imagen") as HTMLInputElement).value = archivo.name;
-  });
+  if (inputImagen) {
+    inputImagen.addEventListener("change", () => {
+      const archivos = inputImagen.files;
+      const archivo = archivos && archivos.length > 0 ? archivos[0] : null;
+      if (!archivo || !previa) return;
+      previa.src = URL.createObjectURL(archivo);
+      previa.hidden = false;
+      (formulario.elements.namedItem("imagen") as HTMLInputElement).value = archivo.name;
+    });
+  }
 
   formulario.addEventListener("submit", async (evento) => {
     evento.preventDefault();
@@ -120,7 +126,8 @@ function inicializarFormularioAlta(): void {
     if (errorValidacion) return mostrarError(cajaError, errorValidacion);
 
     const datos = new FormData(formulario);
-    const imagenSubida = inputImagen?.files?.[0];
+    const archivosImagen = inputImagen ? inputImagen.files : null;
+    const imagenSubida = archivosImagen && archivosImagen.length > 0 ? archivosImagen[0] : null;
 
     const nuevoPerfume: NuevoPerfume = {
       nombre: String(datos.get("nombre")).trim(),
