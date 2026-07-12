@@ -102,7 +102,17 @@ function inicializarInteracciones() {
         const objetivo = evento.target;
         const idAgregar = objetivo.closest("[data-agregar-carrito]")?.dataset.agregarCarrito;
         if (idAgregar) {
-            const error = await agregarAlCarrito(Number(idAgregar));
+            let error;
+            try {
+                error = await agregarAlCarrito(Number(idAgregar));
+            }
+            catch (e) {
+                // Antes, si agregarAlCarrito() rechazaba la promesa (p. ej. porque la
+                // base simulada no pudo inicializarse), el error quedaba sin capturar:
+                // el botón "Añadir" no mostraba nada y parecía que no hacía nada.
+                console.error("Error inesperado al agregar al carrito:", e);
+                error = "No se pudo agregar el perfume al carrito. Probá recargar la página.";
+            }
             const toastContenedor = document.querySelector("[data-toasts]");
             if (toastContenedor) {
                 const toast = document.createElement("div");
@@ -188,10 +198,25 @@ async function inicializarCatalogo() {
     const grilla = document.querySelector("[data-grilla-catalogo]");
     if (!grilla)
         return;
-    catalogoCompleto = await obtenerCatalogoPublico();
-    await poblarFiltros();
-    inicializarControlesFiltro();
-    inicializarInteracciones();
-    renderizarGrilla();
+    try {
+        catalogoCompleto = await obtenerCatalogoPublico();
+        await poblarFiltros();
+        inicializarControlesFiltro();
+        inicializarInteracciones();
+        renderizarGrilla();
+    }
+    catch (error) {
+        // Antes, si obtenerCatalogoPublico() fallaba (p. ej. no se pudo cargar
+        // data/perfumes.json), la excepción quedaba sin manejar y la grilla se
+        // quedaba vacía para siempre, sin ningún mensaje visible para el usuario.
+        console.error("No se pudo cargar el catálogo:", error);
+        const vacio = document.querySelector("[data-catalogo-vacio]");
+        if (vacio) {
+            vacio.querySelector("h3").textContent = "No pudimos cargar el catálogo";
+            vacio.querySelector("p").textContent =
+                "Ocurrió un problema al cargar los perfumes. Recargá la página o probá más tarde.";
+            vacio.hidden = false;
+        }
+    }
 }
 document.addEventListener("DOMContentLoaded", inicializarCatalogo);

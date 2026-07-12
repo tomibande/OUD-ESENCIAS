@@ -44,47 +44,60 @@ function actualizarBadge(): void {
  * Devuelve un mensaje de error si no se pudo agregar, o null si fue exitoso.
  */
 export async function agregarAlCarrito(perfumeId: number, cantidadDeseada = 1): Promise<string | null> {
-  const perfume = await obtenerPerfumePorId(perfumeId);
-  if (!perfume || !perfume.activo) return "Ese perfume ya no está disponible.";
+  try {
+    const perfume = await obtenerPerfumePorId(perfumeId);
+    if (!perfume || !perfume.activo) return "Ese perfume ya no está disponible.";
 
-  const items = leerCarrito();
-  const existente = items.find((i) => i.perfumeId === perfumeId);
-  const cantidadTotal = (existente?.cantidad ?? 0) + cantidadDeseada;
+    const items = leerCarrito();
+    const existente = items.find((i) => i.perfumeId === perfumeId);
+    const cantidadTotal = (existente?.cantidad ?? 0) + cantidadDeseada;
 
-  if (cantidadTotal > perfume.stock) {
-    return `Solo quedan ${perfume.stock} unidades de "${perfume.nombre}" en stock.`;
+    if (cantidadTotal > perfume.stock) {
+      return `Solo quedan ${perfume.stock} unidades de "${perfume.nombre}" en stock.`;
+    }
+
+    if (existente) {
+      existente.cantidad = cantidadTotal;
+    } else {
+      items.push({ perfumeId, cantidad: cantidadDeseada });
+    }
+
+    guardarCarrito(items);
+    return null;
+  } catch (error) {
+    // Si obtenerPerfumePorId() falla (p. ej. no se pudo cargar data/perfumes.json),
+    // antes esta excepción quedaba sin manejar: el click en "Añadir" no hacía
+    // absolutamente nada y no se veía ningún error en pantalla.
+    console.error("No se pudo agregar el perfume al carrito:", error);
+    return "No se pudo agregar el perfume al carrito. Recargá la página e intentá de nuevo.";
   }
-
-  if (existente) {
-    existente.cantidad = cantidadTotal;
-  } else {
-    items.push({ perfumeId, cantidad: cantidadDeseada });
-  }
-
-  guardarCarrito(items);
-  return null;
 }
 
 export async function actualizarCantidad(perfumeId: number, nuevaCantidad: number): Promise<string | null> {
-  const perfume = await obtenerPerfumePorId(perfumeId);
-  if (!perfume) return "Ese perfume ya no está disponible.";
+  try {
+    const perfume = await obtenerPerfumePorId(perfumeId);
+    if (!perfume) return "Ese perfume ya no está disponible.";
 
-  const items = leerCarrito();
-  const item = items.find((i) => i.perfumeId === perfumeId);
-  if (!item) return null;
+    const items = leerCarrito();
+    const item = items.find((i) => i.perfumeId === perfumeId);
+    if (!item) return null;
 
-  if (nuevaCantidad <= 0) {
-    guardarCarrito(items.filter((i) => i.perfumeId !== perfumeId));
+    if (nuevaCantidad <= 0) {
+      guardarCarrito(items.filter((i) => i.perfumeId !== perfumeId));
+      return null;
+    }
+
+    if (nuevaCantidad > perfume.stock) {
+      return `Solo quedan ${perfume.stock} unidades disponibles.`;
+    }
+
+    item.cantidad = nuevaCantidad;
+    guardarCarrito(items);
     return null;
+  } catch (error) {
+    console.error("No se pudo actualizar la cantidad del carrito:", error);
+    return "No se pudo actualizar la cantidad. Recargá la página e intentá de nuevo.";
   }
-
-  if (nuevaCantidad > perfume.stock) {
-    return `Solo quedan ${perfume.stock} unidades disponibles.`;
-  }
-
-  item.cantidad = nuevaCantidad;
-  guardarCarrito(items);
-  return null;
 }
 
 export function quitarDelCarrito(perfumeId: number): void {

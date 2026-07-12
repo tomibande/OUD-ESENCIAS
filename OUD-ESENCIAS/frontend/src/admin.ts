@@ -25,11 +25,31 @@ async function renderizarTablaProductos(): Promise<void> {
   const vacio = document.querySelector<HTMLElement>("[data-productos-vacio]");
   if (!cuerpoTabla) return;
 
-  const productos = await obtenerPerfumesAdmin();
+  let productos: Perfume[];
+  try {
+    productos = await obtenerPerfumesAdmin();
+  } catch (error) {
+    // Antes, si obtenerPerfumesAdmin() fallaba (p. ej. no se pudo cargar
+    // data/perfumes.json), la excepción quedaba sin manejar: la tabla se
+    // quedaba vacía sin ningún aviso, dando la sensación de que el admin
+    // "ve menos perfumes" que el cliente cuando en realidad la carga
+    // había fallado por completo.
+    console.error("No se pudieron cargar los perfumes del panel admin:", error);
+    cuerpoTabla.innerHTML = "";
+    if (vacio) {
+      vacio.textContent = "No pudimos cargar el catálogo. Recargá la página o probá más tarde.";
+      vacio.hidden = false;
+    }
+    return;
+  }
+
   cuerpoTabla.innerHTML = "";
 
   if (productos.length === 0) {
-    if (vacio) vacio.hidden = false;
+    if (vacio) {
+      vacio.textContent = "Todavía no cargaste ningún perfume.";
+      vacio.hidden = false;
+    }
     return;
   }
   if (vacio) vacio.hidden = true;
@@ -65,8 +85,13 @@ async function renderizarTablaProductos(): Promise<void> {
           `¿Confirmás dar de baja "${producto.nombre}"? Podrá desactivarse y dejará de mostrarse a los clientes, pero el registro histórico se conserva.`
         );
         if (!confirmado) return;
-        await bajaPerfume(producto.id);
-        renderizarTablaProductos();
+        try {
+          await bajaPerfume(producto.id);
+          renderizarTablaProductos();
+        } catch (error) {
+          console.error("No se pudo dar de baja el perfume:", error);
+          window.alert("No se pudo dar de baja el perfume. Intentá nuevamente.");
+        }
       });
     }
 
