@@ -5,13 +5,10 @@
  * página específica (catalogo.ts, admin.ts, etc.) además de incluirse
  * directamente donde no hace falta más lógica (login/registro).
  */
-
-import { obtenerSesionActual, cerrarSesion } from "./api.js";
-
-const CARRITO_KEY = "oud_carrito";
+import { obtenerSesionActual, cerrarSesion, obtenerClaveCarrito } from "./api.js";
 
 export function contarItemsCarrito(): number {
-  const guardado = localStorage.getItem(CARRITO_KEY);
+  const guardado = localStorage.getItem(obtenerClaveCarrito());
   if (!guardado) return 0;
   try {
     const items = JSON.parse(guardado) as { cantidad: number }[];
@@ -32,7 +29,6 @@ export function formatoMoneda(valor: number): string {
 /** Pinta el estado de la barra de navegación según haya o no sesión activa. */
 export function inicializarNavbar(): void {
   const sesion = obtenerSesionActual();
-
   const zonaAuth = document.querySelector<HTMLElement>("[data-zona-auth]");
   const badgeCarrito = document.querySelector<HTMLElement>("[data-badge-carrito]");
   const toggleMenu = document.querySelector<HTMLButtonElement>("[data-toggle-menu]");
@@ -56,7 +52,6 @@ export function inicializarNavbar(): void {
         }
         <button class="btn btn--linea btn--sm" data-cerrar-sesion type="button">Salir</button>
       `;
-
       zonaAuth.querySelector("[data-cerrar-sesion]")?.addEventListener("click", () => {
         cerrarSesion();
         window.location.href = "login.html";
