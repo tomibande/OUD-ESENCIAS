@@ -194,8 +194,9 @@
 .tarjeta-perfume__nombre { font-size: 1.3rem; margin-top: 4px; }
 .tarjeta-perfume__ml { font-size: 0.78rem; color: var(--color-texto-muted); margin-top: 4px; }
 
-.tarjeta-perfume__pie { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
+.tarjeta-perfume__pie { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
 .tarjeta-perfume__precio { font-family: var(--fuente-display); font-size: 1.3rem; color: var(--color-oro-brillante); }
+.tarjeta-perfume__pie .btn { width: 100%; text-align: center; }
 
 .tarjeta-perfume__ver-piramide {
   display: block;
@@ -223,6 +224,7 @@
   gap: 12px;
   overflow-y: auto;
 }
+.tarjeta-perfume__piramide[hidden] { display: none; }
 
 .tarjeta-perfume__cerrar-piramide {
   position: absolute; top: 10px; right: 10px;
