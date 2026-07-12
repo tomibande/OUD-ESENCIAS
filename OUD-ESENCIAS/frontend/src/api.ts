@@ -30,6 +30,7 @@ import type {
 
 const DB_KEY = "oud_db_v1";
 const SESION_KEY = "oud_sesion";
+const PREFIJO_CARRITO = "oud_carrito_";
 
 interface BaseDeDatosSimulada {
   perfumes: Perfume[];
@@ -207,6 +208,21 @@ export function cerrarSesion(): void {
 /* ---------------------------------------------------------------------- */
 /* Carrito / Checkout (RF-08 a RF-13)                                     */
 /* ---------------------------------------------------------------------- */
+
+/**
+ * Clave de localStorage donde se guarda el carrito del usuario ACTUALMENTE
+ * logueado. Se centraliza acá (en vez de repetirla en carrito.ts y app.ts)
+ * para que ambos archivos siempre coincidan en qué carrito le corresponde
+ * a cada usuario, sin depender de mantener dos copias sincronizadas.
+ *
+ * Si no hay sesión, se usa una clave de "invitado" separada. Hoy no debería
+ * usarse nunca en la práctica porque el botón de agregar al carrito solo
+ * aparece con sesión iniciada (ver catalogo.ts), pero queda como resguardo.
+ */
+export function obtenerClaveCarrito(): string {
+  const sesion = obtenerSesionActual();
+  return sesion ? `${PREFIJO_CARRITO}${sesion.usuario.id}` : `${PREFIJO_CARRITO}invitado`;
+}
 
 export async function obtenerPerfumePorId(id: number): Promise<Perfume | undefined> {
   const db = await obtenerDB();
