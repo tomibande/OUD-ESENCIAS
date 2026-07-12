@@ -33,7 +33,7 @@ function inicializarLogin(): void {
     return;
   }
 
-  const cajaError = formulario.querySelector<HTMLElement>("[data-error]")!;
+  const cajaError = document.querySelector<HTMLElement>("[data-error]")!;
   const botón = formulario.querySelector<HTMLButtonElement>("[type=submit]")!;
 
   formulario.addEventListener("submit", async (evento) => {
@@ -68,8 +68,8 @@ function inicializarRegistro(): void {
   const formulario = document.querySelector<HTMLFormElement>("[data-form-registro]");
   if (!formulario) return;
 
-  const cajaError = formulario.querySelector<HTMLElement>("[data-error]")!;
-  const cajaExito = formulario.querySelector<HTMLElement>("[data-exito]")!;
+  const cajaError = document.querySelector<HTMLElement>("[data-error]")!;
+  const cajaExito = document.querySelector<HTMLElement>("[data-exito]")!;
   const botón = formulario.querySelector<HTMLButtonElement>("[type=submit]")!;
   const campoEmail = formulario.elements.namedItem("email") as HTMLInputElement;
 
