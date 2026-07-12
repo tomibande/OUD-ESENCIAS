@@ -27,7 +27,7 @@ function inicializarLogin() {
         redirigirPorRol(sesionExistente.usuario.rol);
         return;
     }
-    const cajaError = formulario.querySelector("[data-error]");
+    const cajaError = document.querySelector("[data-error]");
     const botón = formulario.querySelector("[type=submit]");
     formulario.addEventListener("submit", async (evento) => {
         evento.preventDefault();
@@ -60,8 +60,8 @@ function inicializarRegistro() {
     const formulario = document.querySelector("[data-form-registro]");
     if (!formulario)
         return;
-    const cajaError = formulario.querySelector("[data-error]");
-    const cajaExito = formulario.querySelector("[data-exito]");
+    const cajaError = document.querySelector("[data-error]");
+    const cajaExito = document.querySelector("[data-exito]");
     const botón = formulario.querySelector("[type=submit]");
     const campoEmail = formulario.elements.namedItem("email");
     // RF-02: feedback temprano de correo duplicado al salir del campo.
