@@ -9,6 +9,9 @@
 import { obtenerPerfumePorId, validarCupon, procesarCheckout, obtenerHistorialPedidos, obtenerSesionActual, } from "./api.js";
 import { formatoMoneda, escaparHtml } from "./app.js";
 const CARRITO_KEY = "oud_carrito";
+/** Mismo respaldo que catalogo.ts para cuando la imagen externa no carga. */
+const IMAGEN_RESPALDO = "data:image/svg+xml;utf8," +
+    encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><rect width="300" height="300" fill="#1c1712"/><text x="50%" y="50%" fill="#a9895f" font-family="sans-serif" font-size="16" text-anchor="middle" dominant-baseline="middle">Oud Esencias</text></svg>`);
 function leerCarrito() {
     const guardado = localStorage.getItem(CARRITO_KEY);
     return guardado ? JSON.parse(guardado) : [];
@@ -122,7 +125,14 @@ async function renderizarCarrito() {
         const fila = document.createElement("li");
         fila.className = "carrito-item";
         fila.innerHTML = `
-      <img class="carrito-item__imagen" src="${escaparHtml(perfume.imagen)}" alt="${escaparHtml(perfume.nombre)}" loading="lazy">
+      <img
+        class="carrito-item__imagen"
+        src="${escaparHtml(perfume.imagen)}"
+        alt="${escaparHtml(perfume.nombre)}"
+        loading="lazy"
+        referrerpolicy="no-referrer"
+        onerror="this.onerror=null;this.src='${IMAGEN_RESPALDO}';"
+      >
       <div class="carrito-item__info">
         <p class="carrito-item__nombre">${escaparHtml(perfume.nombre)}</p>
         <p class="carrito-item__marca">${escaparHtml(perfume.marca)} · ${perfume.ml} ml</p>
