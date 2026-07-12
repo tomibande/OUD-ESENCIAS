@@ -270,9 +270,3 @@ async function inicializarCatalogo(): Promise<void> {
 }
 
 document.addEventListener("DOMContentLoaded", inicializarCatalogo);
-      vacio.hidden = false;
-    }
-  }
-}
-
-document.addEventListener("DOMContentLoaded", inicializarCatalogo);
